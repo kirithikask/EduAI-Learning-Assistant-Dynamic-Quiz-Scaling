@@ -1,3 +1,5 @@
+# EduAI: Learning Assistant
+with Dynamic Quiz Scaling
 📌 Problem Statement
 
 Students often struggle to find structured, topic-wise learning resources and adaptive guidance. Traditional learning platforms lack personalization, progress tracking, and interactive elements, making it difficult for school/college learners and self-learners to stay engaged and improve effectively.
