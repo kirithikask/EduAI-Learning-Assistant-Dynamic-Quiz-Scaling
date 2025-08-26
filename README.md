@@ -1,10 +1,10 @@
-Problem Statement:
+PROBLEM STATEMENT
 Students often struggle to find structured, topic-wise learning resources and adaptive guidance. Traditional learning platforms lack personalization, progress tracking, and interactive elements, making it difficult for school/college learners and self-learners to stay engaged and improve effectively.
 
- Proposed Solution:
+PROPOSED SOLUTION
 An AI-inspired adaptive e-learning system using Java + MySQL that provides notes, resources, AI tutor guidance, adaptive quizzes, progress tracking, and gamification.
 
- Targeted Users:
+TARGETED USERS
 
 School & college students
 
@@ -12,7 +12,7 @@ Self-learners preparing for exams
 
 Institutions looking for smart study platforms
 
- Features:
+FEATURES
 
 Student login/registration
 
@@ -28,7 +28,7 @@ Gamified rewards & badges
 
 Admin panel to manage content
 
- Tech Stack:
+TECH STACK
 
 Frontend/UI: Java Swing / JavaFX
 
@@ -36,7 +36,7 @@ Backend Logic: Core Java, JDBC
 
 Database: MySQL
 
- OOP Concepts Used:
+OOP CONCEPTS USED
 
 Encapsulation → Secure student/admin data with getters & setters
 
