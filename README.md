@@ -34,11 +34,20 @@ Admin panel to manage content
 
 📌 Tech Stack
 
-Frontend/UI: Java Swing / JavaFX
+Frontend/UI: Java Swing / JavaFX for building interactive user
+interfaces.
 
-Backend Logic: Core Java, JDBC
+Backend Logic: Core Java with JDBC for handling application
+logic and database connectivity.
 
-Database: MySQL
+Database: MySQL for storing subjects, topics, notes, resources,
+and student progress.
+
+PDF Handling: Apache PDFBox for extracting text from PDF
+notes.
+
+Libraries for gamification, charts, or progress visualization in
+Java.
 
 📌 OOP Concepts Used
 
