@@ -40,7 +40,7 @@ interfaces.
 Backend Logic: Core Java with JDBC for handling application
 logic and database connectivity.
 
-Database: MySQL for storing subjects, topics, notes, resources,
+Database: nosql-mongodb for storing subjects, topics, notes, resources,
 and student progress.
 
 PDF Handling: Apache PDFBox for extracting text from PDF
