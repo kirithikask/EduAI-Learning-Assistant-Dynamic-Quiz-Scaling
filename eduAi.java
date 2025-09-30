@@ -1,220 +1,227 @@
-import java.util.Scanner;
+import java.util.*;
 
 class User {
-    String name;
-    String role;
-    String email;
-    String password;  
-    int[] scores = new int[10];
-    int scoreCount = 0;
+    String name, email, password, role;
+    List<Integer> quizScores = new ArrayList<>();
 
-    User(String n, String r, String e, String p) {
-        name = n;
-        role = r;
-        email = e;
-        password = p;
+    User(String name, String email, String password, String role) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
 
-    void addScore(int s) {
-        scores[scoreCount++] = s;
+    void addScore(int score) {
+        quizScores.add(score);
     }
 
-    void progressView() {
-        if (scoreCount == 0) {
-            System.out.println("No quiz taken yet!");
+    void showProgress() {
+        if (quizScores.isEmpty()) {
+            System.out.println("No quizzes attempted yet.");
             return;
         }
-        int total = 0;
-        for (int i = 0; i < scoreCount; i++) {
-            System.out.println("Attempt " + (i+1) + " : " + scores[i]);
-            total += scores[i];
+        System.out.println("\n--- Progress for " + name + " ---");
+        for (int i = 0; i < quizScores.size(); i++) {
+            System.out.println("Quiz " + (i + 1) + ": " + quizScores.get(i));
         }
-        System.out.println("Average: " + (total / scoreCount));
+        double avg = quizScores.stream().mapToInt(Integer::intValue).average().orElse(0);
+        System.out.println("Average Score: " + avg);
+        
     }
 }
 
 class Note {
-    String title;
-    String text;
-
-    Note(String t, String x) { 
-        title = t; 
-        text = x; 
+    String title, content;
+    Note(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 }
 
-class Quiz {
+class Question {
     String question;
-    String[] options = new String[4];
-    int correct;
+    String[] options;
+    int correctAnswer;
 
-    Quiz(String q, String[] o, int c) {
-        question = q; 
-        options = o; 
-        correct = c;
+    Question(String question, String[] options, int correctAnswer) {
+        this.question = question;
+        this.options = options;
+        this.correctAnswer = correctAnswer;
     }
 }
 
-public class eduAi {
+public class java {
     static Scanner sc = new Scanner(System.in);
-    static User[] users = new User[50];
-    static int userCount = 0;
-
-    static Note[] notes = new Note[50];
-    static int noteCount = 0;
-
-    static Quiz[] questions = new Quiz[50];
-    static int qCount = 0;
-
-    static User current = null;
+    static List<User> users = new ArrayList<>();
+    static List<Note> notes = new ArrayList<>();
+    static List<Question> quiz = new ArrayList<>();
+    static User currentUser = null;
 
     public static void main(String[] args) {
-        users[userCount++] = new User("admin", "admin", "admin@mail.com", "123");
 
         while (true) {
-            System.out.println("\nType: login | register | quit");
-            String act = sc.nextLine();
-            if (act.equals("login")) login();
-            else if (act.equals("register")) register();
-            else if (act.equals("quit")) break;
-            else System.out.println("Invalid choice");
+            System.out.println("\n1. Login  2. Register  3. Exit");
+            System.out.print("Choose: ");
+            int choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1: login(); break;
+                case 2: register(); break;
+                case 3: System.exit(0);
+                default: System.out.println("Invalid choice.");
+            }
         }
     }
 
     static void login() {
         System.out.print("Email: ");
-        String e = sc.nextLine();
+        String email = sc.nextLine();
         System.out.print("Password: ");
-        String p = sc.nextLine();
+        String password = sc.nextLine();
 
-        for (int i = 0; i < userCount; i++) {
-            if (users[i].email.equals(e) && users[i].password.equals(p)) {
-                current = users[i];
-                System.out.println("Welcome " + current.name + " (" + current.role + ")");
-                if (current.role.equals("admin")) adminMenu();
+        for (User u : users) {
+            if (u.email.equals(email) && u.password.equals(password)) {
+                currentUser = u;
+                System.out.println("Welcome " + u.name + " (" + u.role + ")");
+                if (u.role.equals("admin")) adminMenu();
+                else if (u.role.equals("teacher")) teacherMenu();
                 else studentMenu();
                 return;
             }
         }
-        System.out.println("User not found. Please register!");
+        System.out.println("Invalid credentials. Try again.");
     }
 
     static void register() {
-        System.out.print("Enter your name: ");
-        String n = sc.nextLine();
-        System.out.print("Enter your role (student/admin): ");
-        String r = sc.nextLine();
-        System.out.print("Enter your email: ");
-        String e = sc.nextLine();
-        System.out.print("Enter your password: ");
-        String p = sc.nextLine();
+        System.out.print("Name: ");
+        String name = sc.nextLine();
+        System.out.print("Email: ");
+        String email = sc.nextLine();
+        System.out.print("Password: ");
+        String password = sc.nextLine();
+        System.out.print("Role (student/teacher/admin): ");
+        String role = sc.nextLine().toLowerCase();
 
-        users[userCount++] = new User(n, r, e, p);
-        System.out.println("Registered Successfully!");
+        users.add(new User(name, email, password, role));
+        System.out.println("registerd!");
     }
 
     static void adminMenu() {
         while (true) {
-            System.out.println("\nAdmin Menu: addnote | shownotes | addq | showq | logout");
-            String c = sc.nextLine();
-            if (c.equals("addnote")) addNote();
-            else if (c.equals("shownotes")) showNotes();
-            else if (c.equals("addq")) addQuestion();
-            else if (c.equals("showq")) showQuestions();
-            else if (c.equals("logout")) break;
-            else System.out.println("Invalid option");
+            System.out.println("\nAdmin Menu: 1.Add Note 2.View Notes 3.Add Quiz 4.View Quiz 5.Logout");
+            int choice = sc.nextInt();
+            sc.nextLine();
+            switch (choice) {
+                case 1: addNote(); break;
+                case 2: viewNotes(); break;
+                case 3: addQuizQuestion(); break;
+                case 4: viewQuizQuestions(); break;
+                case 5: return;
+                default: System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    static void teacherMenu() {
+        while (true) {
+            System.out.println("\nTeacher Menu: 1.Add Note 2.Add Quiz 3.Logout");
+            int choice = sc.nextInt();
+            sc.nextLine();
+            switch (choice) {
+                case 1: addNote(); break;
+                case 2: addQuizQuestion(); break;
+                case 3: return;
+                default: System.out.println("Invalid choice.");
+            }
         }
     }
 
     static void studentMenu() {
         while (true) {
-            System.out.println("\nStudent Menu: search | notes | quiz | progress | logout");
-            String c = sc.nextLine();
-            if (c.equals("search")) searchNote();
-            else if (c.equals("notes")) showNotes();
-            else if (c.equals("quiz")) takeQuiz();
-            else if (c.equals("progress")) current.progressView();
-            else if (c.equals("logout")) break;
-            else System.out.println("Invalid option");
+            System.out.println("\nStudent Menu: 1.View Notes 2.Attempt Quiz 3.View Progress 4.Logout");
+            int choice = sc.nextInt();
+            sc.nextLine();
+            switch (choice) {
+                case 1: viewNotes(); break;
+                case 2: attemptQuiz(); break;
+                case 3: currentUser.showProgress(); break;
+                case 4: return;
+                default: System.out.println("Invalid choice.");
+            }
         }
     }
 
     static void addNote() {
         System.out.print("Title: ");
-        String t = sc.nextLine();
-        System.out.print("Text: ");
-        String b = sc.nextLine();
-        notes[noteCount++] = new Note(t, b);
-        System.out.println("Note added.");
+        String title = sc.nextLine();
+        System.out.print("Content: ");
+        String content = sc.nextLine();
+        notes.add(new Note(title, content));
+        System.out.println("notes added");
     }
 
-    static void showNotes() {
-        if (noteCount == 0) {
-            System.out.println("No notes yet.");
+    static void viewNotes() {
+        if (notes.isEmpty()) {
+            System.out.println("empty.");
             return;
         }
-        for (int i = 0; i < noteCount; i++) {
-            System.out.println("## " + notes[i].title);
-            System.out.println(notes[i].text);
+        for (Note n : notes) {
+            System.out.println("Title: " + n.title);
+            System.out.println("Content: " + n.content);
+            System.out.println("-------------------");
         }
     }
 
-    static void searchNote() {
-        System.out.print("Keyword: ");
-        String k = sc.nextLine().toLowerCase();
-        boolean found = false;
-        for (int i = 0; i < noteCount; i++) {
-            if (notes[i].title.toLowerCase().contains(k) || notes[i].text.toLowerCase().contains(k)) {
-                System.out.println("## " + notes[i].title);
-                System.out.println(notes[i].text);
-                found = true;
-            }
-        }
-        if (!found) System.out.println("No notes found.");
-    }
-
-    static void addQuestion() {
+    static void addQuizQuestion() {
         System.out.print("Question: ");
-        String q = sc.nextLine();
-        String[] opts = new String[4];
+        String question = sc.nextLine();
+        String[] options = new String[4];
         for (int i = 0; i < 4; i++) {
             System.out.print("Option " + (i+1) + ": ");
-            opts[i] = sc.nextLine();
+            options[i] = sc.nextLine();
         }
         System.out.print("Correct option (1-4): ");
-        int a = Integer.parseInt(sc.nextLine());
+        int correct = sc.nextInt();
+        sc.nextLine();
 
-        questions[qCount++] = new Quiz(q, opts, a);
-        System.out.println("Question added.");
+        quiz.add(new Question(question, options, correct));
+        System.out.println("Question added!");
     }
 
-    static void showQuestions() {
-        for (int i = 0; i < qCount; i++) {
-            System.out.println((i+1) + ". " + questions[i].question);
+    static void viewQuizQuestions() {
+        if (quiz.isEmpty()) {
+            System.out.println("No questions.");
+            return;
+        }
+        for (int i = 0; i < quiz.size(); i++) {
+            Question q = quiz.get(i);
+            System.out.println((i+1) + ". " + q.question);
             for (int j = 0; j < 4; j++) {
-                System.out.println("  " + (j+1) + ") " + questions[i].options[j]);
+                System.out.println("  " + (j+1) + ". " + q.options[j]);
             }
-            System.out.println("Answer: " + questions[i].correct);
         }
     }
 
-    static void takeQuiz() {
-        if (qCount == 0) {
-            System.out.println("No quiz available. Ask admin to add questions.");
+    static void attemptQuiz() {
+        if (quiz.isEmpty()) {
+            System.out.println("No quiz available.");
             return;
         }
         int score = 0;
-        for (int i = 0; i < qCount; i++) {
-            System.out.println("Q" + (i+1) + ": " + questions[i].question);
+        for (int i = 0; i < quiz.size(); i++) {
+            Question q = quiz.get(i);
+            System.out.println("Q" + (i+1) + ": " + q.question);
             for (int j = 0; j < 4; j++) {
-                System.out.println("  " + (j+1) + ") " + questions[i].options[j]);
+                System.out.println("  " + (j+1) + ". " + q.options[j]);
             }
             System.out.print("Your answer: ");
-            int ans = Integer.parseInt(sc.nextLine());
-            if (ans == questions[i].correct) score++;
+            int ans = sc.nextInt();
+            sc.nextLine();
+            if (ans == q.correctAnswer) score++;
         }
-        System.out.println("Your Score: " + score + "/" + qCount);
-        current.addScore(score);
-        System.out.println("Great! Keep learning!");
+        System.out.println("Your Score: " + score + "/" + quiz.size());
+        currentUser.addScore(score);
+        System.out.println("keep learning");
     }
 }
